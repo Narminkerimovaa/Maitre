@@ -28,6 +28,8 @@
   --space-10: 40px;
 
   --page-padding: 70px;
+  --page-max-width: 1440px;
+  
   --control-height: 48px;
   --control-height-sm: 36px;
   --row-height: 64px;

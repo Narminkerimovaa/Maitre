@@ -1,10 +1,15 @@
 .header {
-  height: 72px;
-  padding: 0 var(--page-padding);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--color-border);
+  height: 72px;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-padding);
 }
 
 .left, .user, .logo { display: flex; align-items: center; }
