@@ -25,3 +25,8 @@ export function getPageItems(current: number, total: number): PageItem[] {
   });
   return items;
 }
+
+export function getVisibleRange(page: number, pageSize: number, total: number) {
+  if (total === 0) return { from: 0, to: 0 };
+  return { from: (page - 1) * pageSize + 1, to: Math.min(page * pageSize, total) };
+}
