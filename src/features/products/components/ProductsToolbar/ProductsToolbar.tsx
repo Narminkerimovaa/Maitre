@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  type KeyboardEvent,
+} from "react";
 import { useCategoriesStore } from "@/features/products/store/categoriesStore";
 import { useProductsStore } from "@/features/products/store/productsStore";
 import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
@@ -46,6 +52,14 @@ export function ProductsToolbar() {
     }
   };
 
+  const options = useMemo(
+    () => [
+      { value: "", label: "Bütün kateqoriyalar" },
+      ...categories.map((c) => ({ value: String(c.id), label: c.name })),
+    ],
+    [categories],
+  );
+
   return (
     <div className={styles.toolbar}>
       <div className={styles.search}>
@@ -78,23 +92,15 @@ export function ProductsToolbar() {
       <div className={styles.category}>
         <Select
           aria-label="Kateqoriya"
-          value={categoryId ?? ""}
+          options={options}
+          value={categoryId === null ? "" : String(categoryId)}
           disabled={
             categoriesStatus === "idle" || categoriesStatus === "loading"
           }
-          onChange={(event) =>
-            void setCategory(
-              event.target.value === "" ? null : Number(event.target.value),
-            )
+          onChange={(value) =>
+            void setCategory(value === "" ? null : Number(value))
           }
-        >
-          <option value="">Bütün kateqoriyalar</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </Select>
+        />
       </div>
 
       {categoriesStatus === "error" && (

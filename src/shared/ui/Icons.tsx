@@ -46,3 +46,15 @@ export const AlertIcon = (props: IconProps) => (
     <path d="M12 8v5M12 16.5v.01" />
   </Icon>
 );
+
+export const CheckIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M5 12.5l4.5 4.5L19 7.5" />
+  </Icon>
+);
+
+export const ChevronDownIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M6 9l6 6 6-6" />
+  </Icon>
+);
