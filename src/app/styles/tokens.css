@@ -36,3 +36,7 @@
 @media (max-width: 767px) {
   :root { --page-padding: 16px; }
 }
+
+@media (max-width: 1199px) {
+  :root { --page-padding: 40px; }
+}
