@@ -1,5 +1,5 @@
 import { Header } from "./layout/Header/Header";
-import { Button } from "@/shared/ui/Button/Button";
+import { Input } from "@/shared/ui/Input/Input";
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       <Header />
       <main style={{ padding: "40px var(--page-padding)" }}>
         <h1>Məhsullar</h1>
-        <Button variant="primary" size="sm">click</Button>
+        <Input></Input>
       </main>
     </>
   );
