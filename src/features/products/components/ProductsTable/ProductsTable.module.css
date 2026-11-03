@@ -1,0 +1,151 @@
+.card {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  transition: opacity 0.15s;
+}
+
+.refreshing {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.colCategory { width: 318px; }
+.colPrice { width: 120px; }
+.colStatus { width: 292px; }
+.colActions { width: 120px; }
+
+.table th,
+.table td {
+  padding: 0 var(--space-4);
+  text-align: left;
+}
+
+.table th:first-child,
+.table td:first-child { padding-left: var(--space-6); }
+
+.table th:last-child,
+.table td:last-child { padding-right: var(--space-6); }
+
+.table th {
+  height: 48px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.row { height: var(--row-height); }
+
+.table td {
+  border-bottom: 1px solid var(--color-border);
+  font-size: 15px;
+}
+
+.table tbody tr:last-child td { border-bottom: 0; }
+
+.right { text-align: right !important; }
+
+.name {
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nameEn {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 15px;
+}
+
+.actions { text-align: right !important; }
+
+.off .name,
+.off .price,
+.off .status { color: var(--color-text-secondary); }
+
+.skeletonStack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cards {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.item:last-child { border-bottom: 0; }
+
+.itemTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.itemMeta { margin-top: var(--space-3); }
+
+.itemBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-3);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 1199px) {
+  .colCategory { width: 200px; }
+  .colPrice { width: 110px; }
+  .colStatus { width: 220px; }
+  .colActions { width: 110px; }
+}
+
+@media (max-width: 1023px) {
+  .table { display: none; }
+  .cards { display: block; }
+}
