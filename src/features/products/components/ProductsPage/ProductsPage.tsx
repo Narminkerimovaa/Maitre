@@ -1,26 +1,27 @@
-import { useEffect, useRef, useState } from 'react';
-import type { Product } from '@/features/products/api/api';
-import { useProductsUrlSync } from '@/features/products/hooks/useProductsUrlSync';
-import { useCategoriesStore } from '@/features/products/store/categoriesStore';
+import { useEffect, useRef, useState } from "react";
+import { useProductsUrlSync } from "@/features/products/hooks/useProductsUrlSync";
+import { useCategoriesStore } from "@/features/products/store/categoriesStore";
 import {
   getTotalPages,
   PAGE_SIZE,
   useProductsStore,
-} from '@/features/products/store/productsStore';
-import { Button } from '@/shared/ui/Button/Button';
-import { PlusIcon } from '@/shared/ui/Icons';
-import { Pagination } from '@/shared/ui/Pagination/Pagination';
-import { getVisibleRange } from '@/shared/utils/pagination';
-import { ProductsTable } from '../ProductsTable/ProductsTable';
-import { ProductsToolbar } from '../ProductsToolbar/ProductsToolbar';
-import styles from './ProductsPage.module.css';
-
-type FormTarget = { mode: 'create' } | { mode: 'edit'; product: Product } | null;
+} from "@/features/products/store/productsStore";
+import { Button } from "@/shared/ui/Button/Button";
+import { PlusIcon } from "@/shared/ui/Icons";
+import { Pagination } from "@/shared/ui/Pagination/Pagination";
+import { getVisibleRange } from "@/shared/utils/pagination";
+import { ProductsTable } from "../ProductsTable/ProductsTable";
+import { ProductsToolbar } from "../ProductsToolbar/ProductsToolbar";
+import {
+  ProductFormModal,
+  type FormTarget,
+} from "../ProductFormModal/ProductFormModal";
+import styles from "./ProductsPage.module.css";
 
 export function ProductsPage() {
   useProductsUrlSync();
 
-  const [, setFormTarget] = useState<FormTarget>(null);
+  const [formTarget, setFormTarget] = useState<FormTarget>(null);
 
   const fetchCategories = useCategoriesStore((s) => s.fetchCategories);
   const categories = useCategoriesStore((s) => s.items);
@@ -32,7 +33,7 @@ export function ProductsPage() {
   const page = useProductsStore((s) => s.query.page);
   const categoryId = useProductsStore((s) => s.query.categoryId);
   const hasFilter = useProductsStore(
-    (s) => s.query.search !== '' || s.query.categoryId !== null,
+    (s) => s.query.search !== "" || s.query.categoryId !== null,
   );
   const setPage = useProductsStore((s) => s.setPage);
   const setCategory = useProductsStore((s) => s.setCategory);
@@ -42,7 +43,7 @@ export function ProductsPage() {
   }, [fetchCategories]);
 
   useEffect(() => {
-    if (categoriesStatus !== 'success' || categoryId === null) return;
+    if (categoriesStatus !== "success" || categoryId === null) return;
     if (!categories.some((c) => c.id === categoryId)) void setCategory(null);
   }, [categoriesStatus, categories, categoryId, setCategory]);
 
@@ -54,17 +55,18 @@ export function ProductsPage() {
       return;
     }
     const top = anchorRef.current?.getBoundingClientRect().top ?? 0;
-    if (top < 0) anchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (top < 0)
+      anchorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [page]);
 
   const subtitle = !hasLoadedOnce
-    ? 'Menyudakı bütün məhsullar'
+    ? "Menyudakı bütün məhsullar"
     : hasFilter
       ? `${total} məhsul tapıldı`
       : `Menyudakı bütün məhsullar · ${total} məhsul`;
 
   const { from, to } = getVisibleRange(page, PAGE_SIZE, total);
-  const showFooter = status !== 'error' && total > 0;
+  const showFooter = status !== "error" && total > 0;
 
   return (
     <main className={styles.page}>
@@ -74,7 +76,7 @@ export function ProductsPage() {
           <p className={styles.subtitle}>{subtitle}</p>
         </div>
         <div className={styles.action}>
-          <Button onClick={() => setFormTarget({ mode: 'create' })}>
+          <Button onClick={() => setFormTarget({ mode: "create" })}>
             <PlusIcon />
             Yeni məhsul
           </Button>
@@ -85,8 +87,8 @@ export function ProductsPage() {
 
       <div ref={anchorRef}>
         <ProductsTable
-          onCreate={() => setFormTarget({ mode: 'create' })}
-          onEdit={(product) => setFormTarget({ mode: 'edit', product })}
+          onCreate={() => setFormTarget({ mode: "create" })}
+          onEdit={(product) => setFormTarget({ mode: "edit", product })}
         />
       </div>
 
@@ -95,9 +97,17 @@ export function ProductsPage() {
           <span className={styles.range}>
             {from}-{to} / {total} məhsul
           </span>
-          <Pagination page={page} totalPages={getTotalPages(total)} onChange={(p) => void setPage(p)} />
+          <Pagination
+            page={page}
+            totalPages={getTotalPages(total)}
+            onChange={(p) => void setPage(p)}
+          />
         </footer>
       )}
+      <ProductFormModal
+        target={formTarget}
+        onClose={() => setFormTarget(null)}
+      />
     </main>
   );
 }
