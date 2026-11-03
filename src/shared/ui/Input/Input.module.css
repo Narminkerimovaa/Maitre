@@ -15,6 +15,15 @@
   outline-offset: 2px;
 }
 
+.field:has(.input[aria-invalid='true']) {
+  border-color: var(--color-error);
+}
+
+.field:has(.input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .icon {
   display: inline-flex;
   flex-shrink: 0;
