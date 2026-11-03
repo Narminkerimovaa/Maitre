@@ -13,4 +13,18 @@
   appearance: none;
   -webkit-appearance: none;
   text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.select[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.select:required:invalid {
+  color: var(--color-text-secondary);
 }
