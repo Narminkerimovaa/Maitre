@@ -15,11 +15,11 @@ export function Switch({ checked, onChange, className, ...rest }: SwitchProps) {
   return (
     <button
       type="button"
+      {...rest}
       role="switch"
       aria-checked={checked}
       className={classes}
       onClick={() => onChange(!checked)}
-      {...rest}
     >
       <span className={styles.knob} />
     </button>

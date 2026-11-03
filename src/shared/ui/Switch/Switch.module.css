@@ -28,3 +28,8 @@
 .checked .knob {
   transform: translateX(16px);
 }
+
+.switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
