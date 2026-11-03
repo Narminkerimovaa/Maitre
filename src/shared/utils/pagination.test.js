@@ -1,4 +1,4 @@
-import { getPageItems } from './pagination';
+import { getPageItems, getVisibleRange } from './pagination';
 
 describe('getPageItems', () => {
   test('az səhifə olanda hamısını göstərir', () => {
@@ -30,5 +30,14 @@ describe('getPageItems', () => {
   test('çox səhifə, əvvəldə və sonda', () => {
     expect(getPageItems(1, 10)).toEqual([1, 2, 3, '…', 10]);
     expect(getPageItems(10, 10)).toEqual([1, '…', 8, 9, 10]);
+  });
+});
+
+describe('getVisibleRange', () => {
+  test('aralığı hesablayır', () => {
+    expect(getVisibleRange(1, 10, 48)).toEqual({ from: 1, to: 10 });
+    expect(getVisibleRange(5, 10, 48)).toEqual({ from: 41, to: 48 });
+    expect(getVisibleRange(1, 10, 7)).toEqual({ from: 1, to: 7 });
+    expect(getVisibleRange(1, 10, 0)).toEqual({ from: 0, to: 0 });
   });
 });
