@@ -1,5 +1,4 @@
 import { Header } from "./layout/Header/Header";
-import { Select } from "@/shared/ui/Select/Select";
 
 function App() {
   return (
@@ -7,7 +6,6 @@ function App() {
       <Header />
       <main style={{ padding: "40px var(--page-padding)" }}>
         <h1>Məhsullar</h1>
-        <Select></Select>
       </main>
     </>
   );

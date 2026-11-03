@@ -1,0 +1,30 @@
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-toggle-off);
+  transition: background-color 0.15s;
+}
+
+.checked {
+  background: var(--color-success);
+}
+
+.knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s;
+}
+
+.checked .knob {
+  transform: translateX(16px);
+}
