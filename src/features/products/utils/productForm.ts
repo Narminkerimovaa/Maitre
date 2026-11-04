@@ -46,3 +46,13 @@ export function hasChanges(product: Product, input: ProductInput): boolean {
     product.isAvailable !== input.isAvailable
   );
 }
+
+export function isFormDirty(current: ProductFormState, initial: ProductFormState): boolean {
+  return (
+    current.nameAz !== initial.nameAz ||
+    current.nameEn !== initial.nameEn ||
+    current.categoryId !== initial.categoryId ||
+    current.price !== initial.price ||
+    current.isAvailable !== initial.isAvailable
+  );
+}

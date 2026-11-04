@@ -1,34 +1,41 @@
-import { useId, useMemo, useState, type FormEvent } from 'react';
-import type { Product } from '@/features/products/api/api';
-import { useCategoriesStore } from '@/features/products/store/categoriesStore';
-import { getErrorMessage, useProductsStore } from '@/features/products/store/productsStore';
+import { useId, useMemo, useState, type FormEvent } from "react";
+import type { Product } from "@/features/products/api/api";
+import { useCategoriesStore } from "@/features/products/store/categoriesStore";
+import {
+  getErrorMessage,
+  useProductsStore,
+} from "@/features/products/store/productsStore";
 import {
   EMPTY_FORM,
   hasChanges,
   toFormState,
+  isFormDirty,
   toProductInput,
   type ProductFormState,
-} from '@/features/products/utils/productForm';
+} from "@/features/products/utils/productForm";
 import {
   validateProduct,
   type ProductFormErrors,
   type ProductFormValues,
-} from '@/features/products/utils/validateProduct';
-import { Button } from '@/shared/ui/Button/Button';
-import { Field } from '@/shared/ui/Field/Field';
-import { Input } from '@/shared/ui/Input/Input';
-import { Modal } from '@/shared/ui/Modal/Modal';
-import { Select } from '@/shared/ui/Select/Select';
-import { Spinner } from '@/shared/ui/Spinner/Spinner';
-import { Switch } from '@/shared/ui/Switch/Switch';
-import { toast } from '@/shared/ui/Toast/toastStore';
-import styles from './ProductFormModal.module.css';
+} from "@/features/products/utils/validateProduct";
+import { Button } from "@/shared/ui/Button/Button";
+import { Field } from "@/shared/ui/Field/Field";
+import { Input } from "@/shared/ui/Input/Input";
+import { Modal } from "@/shared/ui/Modal/Modal";
+import { Select } from "@/shared/ui/Select/Select";
+import { Spinner } from "@/shared/ui/Spinner/Spinner";
+import { Switch } from "@/shared/ui/Switch/Switch";
+import { toast } from "@/shared/ui/Toast/toastStore";
+import styles from "./ProductFormModal.module.css";
 
-export type FormTarget = { mode: 'create' } | { mode: 'edit'; product: Product } | null;
+export type FormTarget =
+  | { mode: "create" }
+  | { mode: "edit"; product: Product }
+  | null;
 
 type FieldName = keyof ProductFormValues;
 
-const FIELD_ORDER: FieldName[] = ['nameAz', 'nameEn', 'categoryId', 'price'];
+const FIELD_ORDER: FieldName[] = ["nameAz", "nameEn", "categoryId", "price"];
 
 interface ProductFormModalProps {
   target: FormTarget;
@@ -40,7 +47,7 @@ export function ProductFormModal({ target, onClose }: ProductFormModalProps) {
 
   return (
     <ProductFormDialog
-      product={target.mode === 'edit' ? target.product : null}
+      product={target.mode === "edit" ? target.product : null}
       onClose={onClose}
     />
   );
@@ -62,9 +69,13 @@ function ProductFormDialog({ product, onClose }: ProductFormDialogProps) {
     status: `${baseId}-status`,
   };
 
-  const [values, setValues] = useState<ProductFormState>(() =>
+  const [initialValues] = useState<ProductFormState>(() =>
     product ? toFormState(product) : EMPTY_FORM,
   );
+  const [values, setValues] = useState<ProductFormState>(initialValues);
+  const [confirmingClose, setConfirmingClose] = useState(false);
+  const isDirty = isFormDirty(values, initialValues);
+
   const [errors, setErrors] = useState<ProductFormErrors>({});
   const [saving, setSaving] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -80,7 +91,8 @@ function ProductFormDialog({ product, onClose }: ProductFormDialogProps) {
     [categories],
   );
 
-  const describedBy = (name: FieldName) => (errors[name] ? `${ids[name]}-error` : undefined);
+  const describedBy = (name: FieldName) =>
+    errors[name] ? `${ids[name]}-error` : undefined;
 
   const setFieldError = (name: FieldName, message: string | undefined) =>
     setErrors((prev) => {
@@ -92,13 +104,25 @@ function ProductFormDialog({ product, onClose }: ProductFormDialogProps) {
     });
 
   const changeField = (name: FieldName, value: string) => {
+    setConfirmingClose(false);
     const next = { ...values, [name]: value };
     setValues(next);
     setServerError(null);
     if (errors[name]) setFieldError(name, validateProduct(next)[name]);
   };
 
-  const blurField = (name: FieldName) => setFieldError(name, validateProduct(values)[name]);
+  const blurField = (name: FieldName) =>
+    setFieldError(name, validateProduct(values)[name]);
+
+  const requestClose = () => {
+    if (saving) return;
+    if (confirmingClose) {
+      setConfirmingClose(false);
+      return;
+    }
+    if (isDirty) setConfirmingClose(true);
+    else onClose();
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -141,8 +165,8 @@ function ProductFormDialog({ product, onClose }: ProductFormDialogProps) {
 
   return (
     <Modal
-      title={isEdit ? 'Məhsulu düzəlt' : 'Yeni məhsul'}
-      onClose={onClose}
+      title={isEdit ? "Məhsulu düzəlt" : "Yeni məhsul"}
+      onClose={requestClose}
       dismissible={!saving}
     >
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
@@ -153,44 +177,62 @@ function ProductFormDialog({ product, onClose }: ProductFormDialogProps) {
         )}
 
         <fieldset className={styles.fields} disabled={saving}>
-          <Field id={ids.nameAz} label="Ad (Azərbaycan dilində)" required error={errors.nameAz}>
+          <Field
+            id={ids.nameAz}
+            label="Ad (Azərbaycan dilində)"
+            required
+            error={errors.nameAz}
+          >
             <Input
               id={ids.nameAz}
               data-autofocus
               autoComplete="off"
               value={values.nameAz}
               aria-invalid={Boolean(errors.nameAz)}
-              aria-describedby={describedBy('nameAz')}
-              onChange={(event) => changeField('nameAz', event.target.value)}
-              onBlur={() => blurField('nameAz')}
+              aria-describedby={describedBy("nameAz")}
+              onChange={(event) => changeField("nameAz", event.target.value)}
+              onBlur={() => blurField("nameAz")}
             />
           </Field>
 
-          <Field id={ids.nameEn} label="Ad (ingilis dilində)" error={errors.nameEn}>
+          <Field
+            id={ids.nameEn}
+            label="Ad (ingilis dilində)"
+            error={errors.nameEn}
+          >
             <Input
               id={ids.nameEn}
               autoComplete="off"
               value={values.nameEn}
               aria-invalid={Boolean(errors.nameEn)}
-              aria-describedby={describedBy('nameEn')}
-              onChange={(event) => changeField('nameEn', event.target.value)}
-              onBlur={() => blurField('nameEn')}
+              aria-describedby={describedBy("nameEn")}
+              onChange={(event) => changeField("nameEn", event.target.value)}
+              onBlur={() => blurField("nameEn")}
             />
           </Field>
 
-          <Field id={ids.categoryId} label="Kateqoriya" required error={errors.categoryId}>
+          <Field
+            id={ids.categoryId}
+            label="Kateqoriya"
+            required
+            error={errors.categoryId}
+          >
             <Select
               id={ids.categoryId}
               aria-labelledby={`${ids.categoryId}-label`}
-              aria-describedby={describedBy('categoryId')}
+              aria-describedby={describedBy("categoryId")}
               options={options}
               value={values.categoryId}
               placeholder="Kateqoriya seçin"
               invalid={Boolean(errors.categoryId)}
-              disabled={saving || categoriesStatus === 'idle' || categoriesStatus === 'loading'}
-              onChange={(value) => changeField('categoryId', value)}
+              disabled={
+                saving ||
+                categoriesStatus === "idle" ||
+                categoriesStatus === "loading"
+              }
+              onChange={(value) => changeField("categoryId", value)}
             />
-            {categoriesStatus === 'error' && (
+            {categoriesStatus === "error" && (
               <button
                 type="button"
                 className={styles.retry}
@@ -209,10 +251,10 @@ function ProductFormDialog({ product, onClose }: ProductFormDialogProps) {
               placeholder="0,00"
               value={values.price}
               aria-invalid={Boolean(errors.price)}
-              aria-describedby={describedBy('price')}
+              aria-describedby={describedBy("price")}
               endSlot={<span className={styles.currency}>₼</span>}
-              onChange={(event) => changeField('price', event.target.value)}
-              onBlur={() => blurField('price')}
+              onChange={(event) => changeField("price", event.target.value)}
+              onBlur={() => blurField("price")}
             />
           </Field>
 
@@ -224,22 +266,46 @@ function ProductFormDialog({ product, onClose }: ProductFormDialogProps) {
               <Switch
                 checked={values.isAvailable}
                 aria-labelledby={ids.status}
-                onChange={(checked) => setValues((prev) => ({ ...prev, isAvailable: checked }))}
+                onChange={(checked) =>
+                  setValues((prev) => ({ ...prev, isAvailable: checked }))
+                }
               />
-              <span>{values.isAvailable ? 'Satışda' : 'Satışda deyil'}</span>
+              <span>{values.isAvailable ? "Satışda" : "Satışda deyil"}</span>
             </div>
           </div>
         </fieldset>
 
-        <div className={styles.actions}>
-          <Button variant="secondary" disabled={saving} onClick={onClose}>
-            Ləğv et
-          </Button>
-          <Button type="submit" disabled={saving}>
-            {saving && <Spinner />}
-            {saving ? 'Saxlanılır…' : 'Yadda saxla'}
-          </Button>
-        </div>
+        {confirmingClose ? (
+          <div role="alert" className={styles.confirm}>
+            <p className={styles.confirmText}>
+              Dəyişikliklər saxlanılmayacaq. Bağlansın?
+            </p>
+            <div className={styles.actions}>
+              <Button
+                variant="secondary"
+                autoFocus
+                onClick={() => setConfirmingClose(false)}
+              >
+                Davam et
+              </Button>
+              <Button onClick={onClose}>Bağla</Button>
+            </div>
+          </div>
+        ) : (
+          <div className={styles.actions}>
+            <Button
+              variant="secondary"
+              disabled={saving}
+              onClick={requestClose}
+            >
+              Ləğv et
+            </Button>
+            <Button type="submit" disabled={saving}>
+              {saving && <Spinner />}
+              {saving ? "Saxlanılır…" : "Yadda saxla"}
+            </Button>
+          </div>
+        )}
       </form>
     </Modal>
   );

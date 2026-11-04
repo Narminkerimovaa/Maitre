@@ -94,3 +94,20 @@ describe('hasChanges', () => {
     expect(hasChanges({ ...product, nameEn: null }, { ...same, nameEn: null })).toBe(false);
   });
 });
+
+describe('isFormDirty', () => {
+  const base = toFormState(product);
+
+  test('dəyişiklik yoxdursa false qaytarır', () => {
+    expect(isFormDirty(EMPTY_FORM, { ...EMPTY_FORM })).toBe(false);
+    expect(isFormDirty(base, { ...base })).toBe(false);
+  });
+
+  test('hər sahənin dəyişməsi dirty sayılır', () => {
+    expect(isFormDirty({ ...base, nameAz: 'X' }, base)).toBe(true);
+    expect(isFormDirty({ ...base, nameEn: 'X' }, base)).toBe(true);
+    expect(isFormDirty({ ...base, categoryId: '2' }, base)).toBe(true);
+    expect(isFormDirty({ ...base, price: '9,00' }, base)).toBe(true);
+    expect(isFormDirty({ ...base, isAvailable: false }, base)).toBe(true);
+  });
+});
