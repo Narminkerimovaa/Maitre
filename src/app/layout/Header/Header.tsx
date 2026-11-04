@@ -11,7 +11,6 @@ export function Header() {
               <LogoMark />
               <span className={styles.logoText}>maitre</span>
             </div>
-            <span className={styles.logoText}>maitre</span>
           </div>
           <span className={styles.badge}>Admin</span>
         </div>
