@@ -1,4 +1,5 @@
 import styles from "./Header.module.css";
+import { LogoMark } from "../LogoMark";
 
 export function Header() {
   return (
@@ -6,21 +7,10 @@ export function Header() {
       <div className={styles.inner}>
         <div className={styles.left}>
           <div className={styles.logo}>
-            <svg
-              width="28"
-              height="24"
-              viewBox="0 0 28 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M2 22V4l12 12L26 4v18"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <div className={styles.logo}>
+              <LogoMark />
+              <span className={styles.logoText}>maitre</span>
+            </div>
             <span className={styles.logoText}>maitre</span>
           </div>
           <span className={styles.badge}>Admin</span>
