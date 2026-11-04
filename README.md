@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/favicon.svg" alt="Maitre logosu" width="96" height="96" />
+  <img src="src/public/favicon.svg" alt="Maitre logosu" width="96" height="96" />
 </p>
 
 <h1 align="center">Maitre · Məhsullar paneli</h1>
