@@ -1,4 +1,10 @@
-import { EMPTY_FORM, hasChanges, toFormState, toProductInput } from './productForm';
+import {
+  EMPTY_FORM,
+  hasChanges,
+  isFormDirty,
+  toFormState,
+  toProductInput,
+} from './productForm';
 
 const product = {
   id: 1,
